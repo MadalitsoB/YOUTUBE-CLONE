@@ -2,16 +2,21 @@
 const menuBtn = document.querySelector(".menu-btn");
 const sidebar = document.querySelector(".sidebar");
 
-menuBtn.addEventListener("click", () => {
-  sidebar.classList.toggle("active");
-});
+if (menuBtn && sidebar) {
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+  });
+}
 
 // Close sidebar when clicking on main content
-document.querySelector(".main-content").addEventListener("click", () => {
-  if (window.innerWidth <= 768) {
-    sidebar.classList.remove("active");
-  }
-});
+const mainContent = document.querySelector(".main-content");
+if (mainContent) {
+  mainContent.addEventListener("click", () => {
+    if (window.innerWidth <= 768) {
+      sidebar.classList.remove("active");
+    }
+  });
+}
 
 // ===== SEARCH FUNCTIONALITY =====
 const searchBar = document.querySelector(".search-bar");
@@ -34,55 +39,53 @@ function filterVideos(query) {
   });
 }
 
-searchBar.addEventListener("keyup", (e) => {
-  filterVideos(e.target.value);
-});
+if (searchBar) {
+  searchBar.addEventListener("keyup", (e) => {
+    filterVideos(e.target.value);
+  });
+}
 
-searchBtn.addEventListener("click", () => {
-  filterVideos(searchBar.value);
-});
+if (searchBtn) {
+  searchBtn.addEventListener("click", () => {
+    filterVideos(searchBar ? searchBar.value : "");
+  });
+}
 
 // ===== FILTER BUTTON FUNCTIONALITY =====
 const filterBtns = document.querySelectorAll(".filter-btn");
 
-filterBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    // Remove active class from all buttons
-    filterBtns.forEach((b) => b.classList.remove("active"));
-    // Add active class to clicked button
-    btn.classList.add("active");
+if (filterBtns && filterBtns.length > 0) {
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      // Remove active class from all buttons
+      filterBtns.forEach((b) => b.classList.remove("active"));
+      // Add active class to clicked button
+      btn.classList.add("active");
 
-    // Optional: Filter videos by category
-    const category = btn.textContent.trim();
-    console.log("Selected category:", category);
+      // Optional: Filter videos by category
+      const category = btn.textContent.trim();
+      console.log("Selected category:", category);
+    });
   });
-});
+}
 
 // ===== DARK MODE / LIGHT MODE TOGGLE =====
 function initDarkMode() {
   const savedTheme = localStorage.getItem("theme") || "light";
   document.documentElement.setAttribute("data-theme", savedTheme);
   document.body.setAttribute("data-theme", savedTheme);
-  updateThemeIcon(savedTheme);
-}
-
-function updateThemeIcon(theme) {
-  const themeToggle = document.querySelector(".theme-toggle");
-  if (!themeToggle) return;
-  themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
 }
 
 const themeToggle = document.querySelector(".theme-toggle");
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     const currentTheme =
-      document.documentElement.getAttribute("data-theme") || "dark";
+      document.documentElement.getAttribute("data-theme") || "light";
     const newTheme = currentTheme === "dark" ? "light" : "dark";
 
     document.documentElement.setAttribute("data-theme", newTheme);
     document.body.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
-    updateThemeIcon(newTheme);
   });
 }
 
@@ -112,7 +115,11 @@ function initVideoPreview() {
   });
 }
 
-initVideoPreview();
+try {
+  initVideoPreview();
+} catch (e) {
+  console.error("Error initializing video preview:", e);
+}
 
 // ===== VIDEO MODAL FUNCTIONALITY =====
 const videoModal = document.getElementById("videoModal");
